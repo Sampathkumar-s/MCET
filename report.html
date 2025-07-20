@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Report Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .report-title {
+      color: #ff6600;
+      font-weight: 600;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .form-box, .grid-box {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      flex: 1 1 40%;
+      min-width: 300px;
+    }
+
+    .form-box label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+
+    .form-box input, .form-box select {
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 0.5rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 1rem;
+    }
+
+    .tab {
+      padding: 0.5rem 1.5rem;
+      background: #eee;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .tab:hover {
+      background: #ddd;
+    }
+
+    .tab.active {
+      background: #ff8c42;
+      color: white;
+      font-weight: bold;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(8, 40px);
+      grid-auto-rows: 40px;
+      gap: 5px;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0f0f0;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .note {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #333;
+    }
+
+    #qr-view {
+      display: none;
+      text-align: center;
+      padding-top: 20px;
+    }
+
+    #qrcode {
+      margin: auto;
+      padding: 10px;
+      background: white;
+      display: inline-block;
+    }
+
+    .submit-btn {
+      margin-top: 2rem;
+      padding: 0.8rem 1.5rem;
+      background-color: #ff6600;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+      background-color: #cc5200;
+    }
+  </style>
+</head>
+<body>
+  <div class="report-title">REPORT</div>
+  <div class="container">
+    <div class="form-box">
+      <label>Title:</label>
+      <input id="titleInput" type="text" placeholder="Enter Title" />
+      <label>Description:</label>
+      <input id="descInput" type="text" placeholder="Enter Description" />
+      <label>Type:</label>
+      <select id="typeInput">
+        <option>Electrical</option>
+        <option>Mechanical</option>
+        <option>Other</option>
+      </select>
+
+      <button class="submit-btn" onclick="handleSubmit()">Submit Report</button>
+    </div>
+
+    <div class="grid-box">
+      <div class="tabs">
+        <div class="tab active" onclick="toggleTab('grid')">GRID</div>
+        <div class="tab" onclick="toggleTab('qr')">QR CODE</div>
+      </div>
+
+      <div id="grid-view" class="grid"></div>
+
+      <div id="qr-view">
+        <div id="qrcode"></div>
+        <div class="note">📷 Ready to scan your report QR code.</div>
+      </div>
+
+      <div class="note">
+        🔽 Use grid to mark location. Use QR to share report details.
+      </div>
+    </div>
+  </div>
+
+  <!-- QRCode.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    const gridView = document.getElementById("grid-view");
+    const qrView = document.getElementById("qr-view");
+    const qrcodeContainer = document.getElementById("qrcode");
+
+    // Render the 7x7 grid with A–G rows and 1–7 columns
+    function renderGrid() {
+      const rows = ['A','B','C','D','E','F','G'];
+      gridView.innerHTML = '';
+
+      // Top header row
+      gridView.appendChild(createCell(''));
+      for (let i = 1; i <= 7; i++) {
+        gridView.appendChild(createCell(i));
+      }
+
+      // Grid rows
+      rows.forEach(row => {
+        gridView.appendChild(createCell(row));
+        for (let col = 1; col <= 7; col++) {
+          gridView.appendChild(createCell(''));
+        }
+      });
+    }
+
+    function createCell(content) {
+      const div = document.createElement('div');
+      div.className = 'cell';
+      div.textContent = content;
+      return div;
+    }
+
+    // Handle tab switching
+    function toggleTab(tab) {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(t => t.classList.remove('active'));
+
+      if (tab === 'grid') {
+        tabs[0].classList.add('active');
+        gridView.style.display = 'grid';
+        qrView.style.display = 'none';
+      } else {
+        tabs[1].classList.add('active');
+        gridView.style.display = 'none';
+        qrView.style.display = 'block';
+        generateQRCode();
+      }
+    }
+
+    // Generate QR Code
+    function generateQRCode() {
+      const title = document.getElementById('titleInput').value || 'No Title';
+      const desc = document.getElementById('descInput').value || 'No Description';
+      const type = document.getElementById('typeInput').value;
+
+      const qrText = `📋 Report\nTitle: ${title}\nDescription: ${desc}\nType: ${type}`;
+
+      // Clear previous QR code
+      qrcodeContainer.innerHTML = '';
+
+      new QRCode(qrcodeContainer, {
+        text: qrText,
+        width: 180,
+        height: 180,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+    }
+
+    // Handle submit button
+    function handleSubmit() {
+      alert("Report submitted successfully!");
+    }
+
+    // Initial render
+    renderGrid();
+  </script>
+</body>
+</html>
