@@ -127,7 +127,16 @@
     .submit-btn:hover {
       background-color: #cc5200;
     }
+
+    #reader {
+      width: 250px;
+      margin: auto;
+    }
   </style>
+  <!-- QRCode generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- QRCode scanner -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
   <div class="report-title">REPORT</div>
@@ -143,7 +152,6 @@
         <option>Mechanical</option>
         <option>Other</option>
       </select>
-
       <button class="submit-btn" onclick="handleSubmit()">Submit Report</button>
     </div>
 
@@ -158,6 +166,7 @@
       <div id="qr-view">
         <div id="qrcode"></div>
         <div class="note">📷 Ready to scan your report QR code.</div>
+        <div id="reader"></div>
       </div>
 
       <div class="note">
@@ -166,25 +175,20 @@
     </div>
   </div>
 
-  <!-- QRCode.js Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
     const gridView = document.getElementById("grid-view");
     const qrView = document.getElementById("qr-view");
     const qrcodeContainer = document.getElementById("qrcode");
 
-    // Render the 7x7 grid with A–G rows and 1–7 columns
     function renderGrid() {
       const rows = ['A','B','C','D','E','F','G'];
       gridView.innerHTML = '';
 
-      // Top header row
       gridView.appendChild(createCell(''));
       for (let i = 1; i <= 7; i++) {
         gridView.appendChild(createCell(i));
       }
 
-      // Grid rows
       rows.forEach(row => {
         gridView.appendChild(createCell(row));
         for (let col = 1; col <= 7; col++) {
@@ -200,7 +204,6 @@
       return div;
     }
 
-    // Handle tab switching
     function toggleTab(tab) {
       const tabs = document.querySelectorAll('.tab');
       tabs.forEach(t => t.classList.remove('active'));
@@ -214,18 +217,16 @@
         gridView.style.display = 'none';
         qrView.style.display = 'block';
         generateQRCode();
+        startScanner(); // 📷 Start QR scanner
       }
     }
 
-    // Generate QR Code
     function generateQRCode() {
       const title = document.getElementById('titleInput').value || 'No Title';
       const desc = document.getElementById('descInput').value || 'No Description';
       const type = document.getElementById('typeInput').value;
 
       const qrText = `📋 Report\nTitle: ${title}\nDescription: ${desc}\nType: ${type}`;
-
-      // Clear previous QR code
       qrcodeContainer.innerHTML = '';
 
       new QRCode(qrcodeContainer, {
@@ -238,12 +239,25 @@
       });
     }
 
-    // Handle submit button
     function handleSubmit() {
       alert("Report submitted successfully!");
     }
 
-    // Initial render
+    function startScanner() {
+      const qrScanner = new Html5Qrcode("reader");
+      qrScanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 200 },
+        (decodedText) => {
+          qrScanner.stop();
+          window.location.href = `result.html?data=${encodeURIComponent(decodedText)}`;
+        },
+        (errorMsg) => {
+          // ignore scan errors
+        }
+      );
+    }
+
     renderGrid();
   </script>
 </body>

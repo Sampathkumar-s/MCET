@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard & History</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://images.unsplash.com/photo-1607082350928-13b1ad52816d') no-repeat center center/cover;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 2rem;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #d35400;
+      margin-bottom: 1rem;
+    }
+
+    .section {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+    }
+
+    .field {
+      font-weight: 400;
+      font-size: 14px;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #666;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>USER, Dashboard and History</h2>
+
+    <div class="section">
+      <div class="section-title">Employee Info</div>
+      <div class="row">
+        <span class="field">Employee-ID:</span>
+        <span class="field">EMP12345</span>
+      </div>
+      <div class="row">
+        <span class="field">Name:</span>
+        <span class="field">John Doe</span>
+      </div>
+      <div class="row">
+        <span class="field">Experience:</span>
+        <span class="field">3 Years</span>
+      </div>
+      <div class="row">
+        <span class="field">YOE:</span>
+        <span class="field">2021</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">History</div>
+      <div class="row">
+        <span class="field">Problem-ID:</span>
+        <span class="field">PB103</span>
+      </div>
+      <div class="row">
+        <span class="field">Title:</span>
+        <span class="field">Motor Overheat</span>
+      </div>
+      <div class="row">
+        <span class="field">Status:</span>
+        <span class="field">In Progress</span>
+      </div>
+    </div>
+
+    <div class="note">
+      This page layout is reused for technician's dashboard and history too.
+    </div>
+  </div>
+
+</body>
+</html>
