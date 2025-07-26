@@ -203,6 +203,39 @@
       height: auto;
     }
     
+    /* Access denied message */
+    .access-denied {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .access-denied-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: #ff3333;
+    }
+    
+    .access-denied h2 {
+      color: #ff3333;
+      margin-bottom: 1rem;
+    }
+    
+    .access-denied p {
+      color: #fff;
+      text-align: center;
+      max-width: 500px;
+      margin-bottom: 1.5rem;
+    }
+    
     /* Scrollbar styling */
     ::-webkit-scrollbar {
       width: 8px;
@@ -286,13 +319,21 @@
 
     <!-- Dashboard Buttons -->
     <div class="dashboard-buttons">
-      <button class="dashboard-btn" id="btnQR" onclick="window.location.href='dashboard.html'">Dashboard</button>
-      <button class="dashboard-btn" id="btnProgress" onclick="window.location.href='inprogress.html'">In Progress</button>
-      <button class="dashboard-btn" id="btnReport" onclick="window.location.href='report.html'">Report</button>
-      <button class="dashboard-btn" id="btnDue" onclick="window.location.href='due-today.html'">Due Today</button>
-      <button class="dashboard-btn" id="btnParts" onclick="window.location.href='parts-order.html'">Parts Order</button>
+      <button class="dashboard-btn" id="btnQR" onclick="navigateTo('dashboard.html')">Dashboard</button>
+      <button class="dashboard-btn" id="btnProgress" onclick="navigateTo('inprogress.html')">In Progress</button>
+      <button class="dashboard-btn" id="btnReport" onclick="navigateTo('report.html')">Report</button>
+      <button class="dashboard-btn" id="btnDue" onclick="navigateTo('due-today.html')">Shift Hand Over</button>
+      <button class="dashboard-btn" id="btnParts" onclick="navigateTo('parts-order.html')">Parts Order</button>
       <button class="dashboard-btn logout-btn" onclick="logout()">Logout</button>
     </div>
+  </div>
+
+  <!-- Access Denied Modal -->
+  <div id="accessDeniedModal" class="access-denied" style="display: none;">
+    <div class="access-denied-icon">🚫</div>
+    <h2>Access Denied</h2>
+    <p>This page is restricted to admin users only.</p>
+    <p>You will be redirected to the home page in 5 seconds...</p>
   </div>
 
   <script>
@@ -346,6 +387,7 @@
     const profileDetails = document.getElementById('profileDetails');
     const adminSearch = document.getElementById('adminSearch');
     const userProfile = document.getElementById('userProfile');
+    const accessDeniedModal = document.getElementById('accessDeniedModal');
     
     // Profile detail elements
     const profileName = document.getElementById('profileName');
@@ -360,6 +402,29 @@
     // Check authentication
     const role = localStorage.getItem('role');
     if (!role) window.location.href = 'admin-login.html';
+
+    // Allowed pages for each role
+    const allowedPages = {
+      admin: ['dashboard.html', 'inprogress.html', 'report.html', 'due-today.html', 'parts-order.html'],
+      technician: ['report.html', 'parts-order.html'],
+      worker: ['report.html', 'parts-order.html']
+    };
+
+    // Navigation function with access control
+    function navigateTo(page) {
+      if (!allowedPages[role].includes(page)) {
+        showAccessDenied();
+        return;
+      }
+      window.location.href = page;
+    }
+
+    function showAccessDenied() {
+      accessDeniedModal.style.display = 'flex';
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 5000);
+    }
 
     // Set up UI based on role
     if (role === 'admin') {
@@ -459,8 +524,8 @@
     // Role permissions for dashboard buttons
     const disabledButtons = {
       admin: [],
-      technician: ['btnParts'],
-      worker: ['btnReport', 'btnParts']
+      technician: ['btnQR', 'btnProgress', 'btnDue'],
+      worker: ['btnQR', 'btnProgress', 'btnDue']
     };
 
     // Disable buttons based on role

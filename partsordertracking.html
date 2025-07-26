@@ -47,7 +47,8 @@
     
     .nav-links {
       display: flex;
-      gap: 1.5rem;
+      gap: 1rem;
+      align-items: center;
     }
     
     .nav-link {
@@ -57,6 +58,7 @@
       padding: 0.5rem 1rem;
       border-radius: 5px;
       transition: all 0.3s;
+      font-size: 0.9rem;
     }
     
     .nav-link:hover {
@@ -67,6 +69,31 @@
     .nav-link.active {
       background: var(--primary);
       color: #000;
+    }
+
+    .home-button {
+      background: var(--primary);
+      color: #000;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-left: 1rem;
+    }
+
+    .home-button:hover {
+      background: #e67a35;
+      transform: translateY(-2px);
+    }
+
+    .user-role {
+      margin-left: 1rem;
+      padding: 0.2rem 0.5rem;
+      background: #444;
+      border-radius: 3px;
+      font-size: 0.7rem;
     }
 
     /* Main Container */
@@ -318,13 +345,18 @@
   </style>
 </head>
 <body>
+  <!-- Updated Navigation Bar -->
   <div class="header">
     <div class="logo">TaskFlow</div>
     <div class="nav-links">
       <a href="dashboard.html" class="nav-link">Dashboard</a>
-      <a href="parts-order.html" class="nav-link active">Parts Orders</a>
       <a href="inprogress.html" class="nav-link">In Progress</a>
-      <a href="report.html" class="nav-link">Report</a>
+       <a href="report.html" class="nav-link">Report</a>
+      <a href="shifthandoverlog.html" class="nav-link">Shift Handover</a>
+      <a href="partsordertracking.html" class="nav-link active">Parts Order</a>
+     
+      <span class="user-role" id="roleDisplay">Technician</span>
+      <button class="home-button" onclick="window.location.href='home.html'">Home</button>
     </div>
   </div>
 
@@ -499,83 +531,6 @@
         status: 'shipped',
         tracking: 'DHL-56238901',
         notes: 'For conveyor system upgrade'
-      },
-      {
-        id: 'PO-2023-161',
-        part: 'Temperature Sensors',
-        quantity: 6,
-        supplier: 'Tech Components Ltd.',
-        orderDate: '2023-11-14',
-        deliveryDate: '2023-11-21',
-        status: 'delivered',
-        tracking: 'UPS-34567812',
-        notes: 'Calibration needed before installation'
-      },
-      {
-        id: 'PO-2023-162',
-        part: 'Pneumatic Valves',
-        quantity: 12,
-        supplier: 'Fluid Systems Inc.',
-        orderDate: '2023-11-22',
-        deliveryDate: '2023-11-29',
-        status: 'ordered',
-        tracking: '',
-        notes: 'For maintenance stock'
-      },
-      {
-        id: 'PO-2023-163',
-        part: 'Control Panel Buttons',
-        quantity: 20,
-        supplier: 'Industrial Parts Co.',
-        orderDate: '2023-11-16',
-        deliveryDate: '2023-11-23',
-        status: 'shipped',
-        tracking: 'FEDEX-90123456',
-        notes: 'Various colors required'
-      },
-      {
-        id: 'PO-2023-164',
-        part: 'Gearbox Assembly',
-        quantity: 1,
-        supplier: 'Precision Machining Corp.',
-        orderDate: '2023-11-19',
-        deliveryDate: '2023-11-26',
-        status: 'ordered',
-        tracking: '',
-        notes: 'Custom specifications'
-      },
-      {
-        id: 'PO-2023-165',
-        part: 'Electrical Wiring',
-        quantity: 50,
-        supplier: 'Global Industrial Supply',
-        orderDate: '2023-11-11',
-        deliveryDate: '2023-11-18',
-        status: 'delivered',
-        tracking: 'DHL-78901234',
-        notes: 'Various lengths and gauges'
-      },
-      {
-        id: 'PO-2023-166',
-        part: 'Limit Switches',
-        quantity: 15,
-        supplier: 'Tech Components Ltd.',
-        orderDate: '2023-11-21',
-        deliveryDate: '2023-11-28',
-        status: 'ordered',
-        tracking: '',
-        notes: 'For safety system upgrade'
-      },
-      {
-        id: 'PO-2023-167',
-        part: 'Bearing Set',
-        quantity: 5,
-        supplier: 'Industrial Parts Co.',
-        orderDate: '2023-11-13',
-        deliveryDate: '2023-11-20',
-        status: 'delivered',
-        tracking: 'UPS-12345678',
-        notes: 'High-temperature application'
       }
     ];
 
@@ -745,4 +700,4 @@
     window.closeModal = closeModal;
   </script>
 </body>
-</html>Sachin Tendulkar. Rotation. How to go to? Decision about. 
+</html>
