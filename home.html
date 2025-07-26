@@ -322,8 +322,8 @@
       <button class="dashboard-btn" id="btnQR" onclick="navigateTo('dashboard.html')">Dashboard</button>
       <button class="dashboard-btn" id="btnProgress" onclick="navigateTo('inprogress.html')">In Progress</button>
       <button class="dashboard-btn" id="btnReport" onclick="navigateTo('report.html')">Report</button>
-      <button class="dashboard-btn" id="btnDue" onclick="navigateTo('due-today.html')">Shift Hand Over</button>
-      <button class="dashboard-btn" id="btnParts" onclick="navigateTo('parts-order.html')">Parts Order</button>
+      <button class="dashboard-btn" id="btnDue" onclick="navigateTo('shifthandoverlog.html')">Shift Hand Over</button>
+      <button class="dashboard-btn" id="btnParts" onclick="navigateTo('partsordertracking.html')">Parts Order</button>
       <button class="dashboard-btn logout-btn" onclick="logout()">Logout</button>
     </div>
   </div>
@@ -405,14 +405,14 @@
 
     // Allowed pages for each role
     const allowedPages = {
-      admin: ['dashboard.html', 'inprogress.html', 'report.html', 'due-today.html', 'parts-order.html'],
-      technician: ['report.html', 'parts-order.html'],
-      worker: ['report.html', 'parts-order.html']
+      admin: ['dashboard.html', 'inprogress.html', 'report.html', 'shifthandoverlog.html', 'partsordertracking.html'],
+      technician: ['report.html', 'partsordertracking.html'],
+      worker: ['report.html', 'partsordertracking.html']
     };
 
     // Navigation function with access control
     function navigateTo(page) {
-      if (!allowedPages[role].includes(page)) {
+      if (!allowedPages[role] || !allowedPages[role].includes(page)) {
         showAccessDenied();
         return;
       }
@@ -529,13 +529,18 @@
     };
 
     // Disable buttons based on role
-    disabledButtons[role].forEach(btnId => {
-      document.getElementById(btnId).classList.add('disabled-btn');
-    });
+    if (disabledButtons[role]) {
+      disabledButtons[role].forEach(btnId => {
+        const button = document.getElementById(btnId);
+        if (button) {
+          button.classList.add('disabled-btn');
+        }
+      });
+    }
 
     function logout() {
       localStorage.removeItem('role');
-      window.location.href = `index.html`;
+      window.location.href = 'index.html';
     }
   </script>
 </body>
