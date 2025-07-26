@@ -20,8 +20,8 @@
       display: flex;
     }
     
-    /* Left Panel - User Profile (50%) */
-    .profile-panel {
+    /* Left Panel (50%) */
+    .left-panel {
       width: 50%;
       padding: 2rem;
       background: linear-gradient(135deg, #1e1e1e 0%, #2e2e2e 100%);
@@ -30,9 +30,58 @@
       flex-direction: column;
     }
     
+    /* Search Container (Admin Only) */
+    .search-container {
+      margin-bottom: 2rem;
+      display: none; /* Hidden by default */
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 30px;
+      border: none;
+      background: #3e3e3e;
+      color: white;
+      font-size: 1rem;
+      padding-left: 3rem;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23bbb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+      background-repeat: no-repeat;
+      background-position: 1rem center;
+      transition: all 0.3s;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #FF8C42;
+      background-color: #4e4e4e;
+    }
+    
+    .search-results {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 1rem;
+      border-radius: 10px;
+      background: #2e2e2e;
+      display: none;
+    }
+    
+    .search-result-item {
+      padding: 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid #3e3e3e;
+      transition: background 0.2s;
+    }
+    
+    .search-result-item:hover {
+      background: #3e3e3e;
+    }
+    
+    /* Profile Section (All Users) */
     .profile-section {
       text-align: center;
       margin-bottom: 2rem;
+      display: none; /* Hidden by default */
     }
     
     .profile-pic {
@@ -48,11 +97,36 @@
       color: #000;
     }
     
-    .about-section {
+    /* Profile Details (All Users) */
+    .profile-details {
       background: #2e2e2e;
       padding: 1.5rem;
       border-radius: 10px;
       flex-grow: 1;
+    }
+    
+    .profile-details h3 {
+      margin-bottom: 1rem;
+      color: #FF8C42;
+    }
+    
+    .profile-details p {
+      margin-bottom: 0.8rem;
+      line-height: 1.6;
+    }
+    
+    .status-active {
+      color: #4CAF50;
+    }
+    
+    .role-tag {
+      background: #FF8C42;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: inline-block;
+      margin-top: 0.5rem;
+      color: #000;
     }
     
     /* Right Panel - Dashboard (50%) */
@@ -129,32 +203,66 @@
       height: auto;
     }
     
-    .role-tag {
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #2e2e2e;
+      border-radius: 0 10px 10px 0;
+    }
+    
+    ::-webkit-scrollbar-thumb {
       background: #FF8C42;
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      display: inline-block;
-      margin-top: 0.5rem;
+      border-radius: 4px;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .left-panel,
+      .dashboard-panel {
+        width: 100%;
+      }
+      
+      .dashboard-buttons {
+        grid-template-columns: 1fr;
+      }
+      
+      .logout-btn {
+        grid-column: span 1;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Left Panel - User Profile -->
-  <div class="profile-panel">
-    <div class="profile-section">
-      <div class="profile-pic">USER_PROFILE</div>
-      <h2 id="usernameDisplay">USER_NAME</h2>
+  <!-- Left Panel -->
+  <div class="left-panel">
+    <!-- Search Container (Admin Only) -->
+    <div class="search-container" id="adminSearch">
+      <input type="text" class="search-input" placeholder="Search workers or technicians..." id="searchInput">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    
+    <!-- Profile Section (Technician/Worker) -->
+    <div class="profile-section" id="userProfile">
+      <div class="profile-pic">USER</div>
+      <h2 id="usernameDisplay"></h2>
       <div class="role-tag" id="roleDisplay"></div>
     </div>
     
-    <div class="about-section">
-      <h3>About</h3>
-      <p><strong>Role:</strong> <span id="roleAbout"></span></p>
-      <p><strong>Department:</strong> Technical Services</p>
-      <p><strong>Employee ID:</strong> TECH-<span id="employeeId"></span></p>
-      <p><strong>Last Login:</strong> <span id="lastLogin"></span></p>
-      <p><strong>Status:</strong> <span style="color: #4CAF50;">Active</span></p>
+    <!-- Profile Details (All Users) -->
+    <div class="profile-details" id="profileDetails">
+      <h3 id="profileName"></h3>
+      <p><strong>Role:</strong> <span id="profileRole"></span></p>
+      <p><strong>Department:</strong> <span id="profileDept">Technical Services</span></p>
+      <p><strong>Employee ID:</strong> <span id="profileId"></span></p>
+      <p><strong>Last Login:</strong> <span id="profileLogin"></span></p>
+      <p><strong>Status:</strong> <span class="status-active" id="profileStatus">Active</span></p>
     </div>
   </div>
 
@@ -188,26 +296,174 @@
   </div>
 
   <script>
+    // Sample employee data
+    const employees = [
+      {
+        name: "John Smith",
+        role: "Technician",
+        department: "Technical Services",
+        id: "TECH-5636",
+        status: "Active",
+        lastLogin: new Date()
+      },
+      {
+        name: "Sarah Johnson",
+        role: "Worker",
+        department: "Production",
+        id: "PROD-7821",
+        status: "Active",
+        lastLogin: new Date(Date.now() - 3600000 * 3) // 3 hours ago
+      },
+      {
+        name: "Michael Brown",
+        role: "Technician",
+        department: "Maintenance",
+        id: "MNT-4592",
+        status: "On Leave",
+        lastLogin: new Date(Date.now() - 86400000 * 2) // 2 days ago
+      },
+      {
+        name: "Emily Davis",
+        role: "Worker",
+        department: "Quality Control",
+        id: "QC-3178",
+        status: "Active",
+        lastLogin: new Date(Date.now() - 3600000) // 1 hour ago
+      },
+      {
+        name: "Robert Wilson",
+        role: "Admin",
+        department: "Management",
+        id: "ADM-9245",
+        status: "Active",
+        lastLogin: new Date()
+      }
+    ];
+
+    // DOM elements
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    const profileDetails = document.getElementById('profileDetails');
+    const adminSearch = document.getElementById('adminSearch');
+    const userProfile = document.getElementById('userProfile');
+    
+    // Profile detail elements
+    const profileName = document.getElementById('profileName');
+    const profileRole = document.getElementById('profileRole');
+    const profileDept = document.getElementById('profileDept');
+    const profileId = document.getElementById('profileId');
+    const profileLogin = document.getElementById('profileLogin');
+    const profileStatus = document.getElementById('profileStatus');
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const roleDisplay = document.getElementById('roleDisplay');
+
     // Check authentication
     const role = localStorage.getItem('role');
     if (!role) window.location.href = 'admin-login.html';
 
-    // Set UI based on role
-    const roleName = role.charAt(0).toUpperCase() + role.slice(1);
-    document.getElementById('roleDisplay').textContent = roleName;
-    document.getElementById('usernameDisplay').textContent = roleName;
-    document.getElementById('roleAbout').textContent = roleName;
-    document.getElementById('employeeId').textContent = Math.floor(1000 + Math.random() * 9000);
-    document.getElementById('lastLogin').textContent = new Date().toLocaleString();
+    // Set up UI based on role
+    if (role === 'admin') {
+      // Show search functionality for admin
+      adminSearch.style.display = 'block';
+      
+      // Set up search functionality
+      searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        if (searchTerm.length < 2) {
+          searchResults.style.display = 'none';
+          return;
+        }
+        
+        const filteredEmployees = employees.filter(emp => 
+          emp.name.toLowerCase().includes(searchTerm) || 
+          emp.id.toLowerCase().includes(searchTerm)
+        );
+        
+        displaySearchResults(filteredEmployees);
+      });
+      
+      // Show admin's own details by default
+      showEmployeeDetails(employees.find(emp => emp.role === 'Admin'));
+    } else {
+      // Show profile section for technician/worker
+      userProfile.style.display = 'block';
+      
+      // Get current user's data
+      const currentUser = employees.find(emp => emp.role.toLowerCase() === role) || 
+        {
+          name: role.charAt(0).toUpperCase() + role.slice(1) + " User",
+          role: role.charAt(0).toUpperCase() + role.slice(1),
+          department: "Technical Services",
+          id: `${role.slice(0, 4).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+          status: "Active",
+          lastLogin: new Date()
+        };
+      
+      // Display user profile
+      usernameDisplay.textContent = currentUser.name;
+      roleDisplay.textContent = currentUser.role;
+      showEmployeeDetails(currentUser);
+    }
 
-    // Role permissions
+    function displaySearchResults(results) {
+      searchResults.innerHTML = '';
+      
+      if (results.length === 0) {
+        searchResults.innerHTML = '<div class="search-result-item">No employees found</div>';
+      } else {
+        results.forEach(emp => {
+          const item = document.createElement('div');
+          item.className = 'search-result-item';
+          item.textContent = `${emp.name} (${emp.id})`;
+          item.addEventListener('click', () => showEmployeeDetails(emp));
+          searchResults.appendChild(item);
+        });
+      }
+      
+      searchResults.style.display = 'block';
+    }
+
+    function showEmployeeDetails(employee) {
+      profileName.textContent = employee.name;
+      profileRole.textContent = employee.role;
+      profileDept.textContent = employee.department;
+      profileId.textContent = employee.id;
+      profileLogin.textContent = formatDate(employee.lastLogin);
+      profileStatus.textContent = employee.status;
+      
+      // Update status color
+      profileStatus.className = employee.status === 'Active' ? 'status-active' : '';
+    }
+
+    function formatDate(date) {
+      return date.toLocaleString();
+    }
+
+    // Update last login time continuously
+    function updateLoginTime() {
+      const loginElement = document.getElementById('profileLogin');
+      if (loginElement && loginElement.textContent) {
+        const dateStr = loginElement.textContent;
+        const date = new Date(dateStr);
+        if (!isNaN(date.getTime())) {
+          loginElement.textContent = formatDate(date);
+        }
+      }
+      setTimeout(updateLoginTime, 60000); // Update every minute
+    }
+
+    // Start time updates
+    updateLoginTime();
+
+    // Role permissions for dashboard buttons
     const disabledButtons = {
       admin: [],
       technician: ['btnParts'],
       worker: ['btnReport', 'btnParts']
     };
 
-    // Disable buttons
+    // Disable buttons based on role
     disabledButtons[role].forEach(btnId => {
       document.getElementById(btnId).classList.add('disabled-btn');
     });

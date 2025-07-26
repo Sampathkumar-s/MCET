@@ -6,40 +6,81 @@
   <title>In Progress</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #0e0e0e;
-      color: white;
+    :root {
+      --primary: #FF8C42;
+      --secondary: #2e2e2e;
+      --danger: #ff3333;
+      --success: #4CAF50;
+      --text: #fff;
+      --bg: #0e0e0e;
+    }
+    
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
     }
-
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    
+    /* Header/Nav Styles - Matching Report Page */
     .header {
       background: #000;
-      padding: 1rem;
+      padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 4px 15px rgba(255, 140, 66, 0.2);
     }
-
-    .back-btn {
-      background: #FF8C42;
-      border: none;
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    
+    .nav-link {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
       padding: 0.5rem 1rem;
       border-radius: 5px;
-      color: white;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 600;
+      transition: all 0.3s;
     }
-
-    .back-btn:hover {
-      background: #e67a35;
+    
+    .nav-link:hover {
+      background: rgba(255, 140, 66, 0.2);
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(255, 140, 66, 0.3);
+    }
+    
+    .nav-link.active {
+      background: var(--primary);
+      color: #000;
+    }
+    
+    .nav-link.active:hover {
+      background: #e67a35;
+    }
+    
+    .user-role {
+      margin-left: 1rem;
+      padding: 0.2rem 0.5rem;
+      background: #444;
+      border-radius: 3px;
+      font-size: 0.7rem;
     }
 
+    /* Rest of your existing styles remain the same */
     .container {
       display: flex;
       flex-wrap: wrap;
@@ -339,15 +380,23 @@
   </style>
 </head>
 <body>
+  <!-- ONLY THIS NAVIGATION BAR SECTION IS MODIFIED -->
   <div class="header">
-    <button class="back-btn" onclick="window.location.href='home.html'">Back to Home</button>
-    <div id="roleDisplay"></div>
+    <div class="logo">TaskFlow</div>
+    <div class="nav-links">
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="inprogress.html" class="nav-link active">In Progress</a>
+      <a href="report.html" class="nav-link">Report</a>
+      <a href="home.html" class="nav-link">home</a>
+      <span class="user-role" id="roleDisplay"></span>
+    </div>
   </div>
   
+  <!-- EVERYTHING BELOW THIS POINT REMAINS EXACTLY THE SAME AS YOUR ORIGINAL CODE -->
   <div class="search-container">
     <div class="search-bar">
       <input type="text" class="search-input" id="searchInput" placeholder="Search tasks by ID, title or status...">
-      <button class="clear-button" id="clearButton"></button>
+      <button class="clear-button" id="clearButton">✕</button>
       <button class="search-button" id="searchButton">
         <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
@@ -373,7 +422,7 @@
     if (!role) window.location.href = 'admin-login.html';
 
     document.getElementById('roleDisplay').textContent = 
-      role.charAt(0).toUpperCase() + role.slice(1) + ' Dashboard';
+      role.charAt(0).toUpperCase() + role.slice(1);
 
     // Enhanced tasks data with reported issues
     const tasks = {

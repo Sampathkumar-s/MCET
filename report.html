@@ -235,6 +235,13 @@
       background: #ff3333;
       color: #fff;
     }
+    
+    .no-reports {
+      color: #bbb;
+      text-align: center;
+      padding: 2rem;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -242,7 +249,7 @@
     <div class="logo">TaskFlow</div>
     <div class="nav-links">
       <a href="dashboard.html" class="nav-link">Dashboard</a>
-      <a href="in-progress.html" class="nav-link">In Progress</a>
+      <a href="inprogress.html" class="nav-link">In Progress</a>
       <a href="report.html" class="nav-link active">Report</a>
       <a href="profile.html" class="nav-link">Profile</a>
     </div>
@@ -309,33 +316,8 @@
         <h2 class="card-title">Your Recent Reports</h2>
       </div>
       
-      <div class="reports-list">
-        <div class="report-item">
-          <h3 class="report-title">Conveyor Belt Motor Overheating</h3>
-          <div class="report-meta">
-            <span>#REP-2023-156</span>
-            <span>Submitted: 2 hours ago</span>
-          </div>
-          <div class="status-badge status-pending">In Review</div>
-        </div>
-        
-        <div class="report-item">
-          <h3 class="report-title">Safety Hazard in Workstation 3</h3>
-          <div class="report-meta">
-            <span>#REP-2023-155</span>
-            <span>Submitted: 1 day ago</span>
-          </div>
-          <div class="status-badge status-resolved">Resolved</div>
-        </div>
-        
-        <div class="report-item">
-          <h3 class="report-title">Packaging Machine Error Code 45</h3>
-          <div class="report-meta">
-            <span>#REP-2023-153</span>
-            <span>Submitted: 3 days ago</span>
-          </div>
-          <div class="status-badge status-rejected">Rejected</div>
-        </div>
+      <div class="reports-list" id="reportsList">
+        <!-- Reports will be dynamically inserted here -->
       </div>
     </div>
   </div>
@@ -355,6 +337,118 @@
       }
     });
     
+    // Function to format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffInSeconds = Math.floor((now - date) / 1000);
+      
+      if (diffInSeconds < 60) {
+        return 'Just now';
+      } else if (diffInSeconds < 3600) {
+        const minutes = Math.floor(diffInSeconds / 60);
+        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+      } else if (diffInSeconds < 86400) {
+        const hours = Math.floor(diffInSeconds / 3600);
+        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+      } else {
+        const days = Math.floor(diffInSeconds / 86400);
+        return `${days} day${days !== 1 ? 's' : ''} ago`;
+      }
+    }
+    
+    // Function to render reports
+    function renderReports() {
+      const reportsList = document.getElementById('reportsList');
+      let reports = JSON.parse(localStorage.getItem('reports')) || [];
+      
+      // Add sample reports if none exist (for demo purposes)
+      if (reports.length === 0) {
+        reports = [
+          {
+            id: 'REP-2023-156',
+            title: 'Conveyor Belt Motor Overheating',
+            type: 'maintenance',
+            priority: 'high',
+            description: 'The motor on conveyor belt #3 is overheating after 2 hours of continuous use.',
+            status: 'pending',
+            date: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
+            attachments: 1
+          },
+          {
+            id: 'REP-2023-155',
+            title: 'Safety Hazard in Workstation 3',
+            type: 'safety',
+            priority: 'critical',
+            description: 'Loose wiring near the main control panel poses a shock hazard.',
+            status: 'resolved',
+            date: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+            attachments: 2
+          },
+          {
+            id: 'REP-2023-153',
+            title: 'Packaging Machine Error Code 45',
+            type: 'bug',
+            priority: 'medium',
+            description: 'Packaging machine throws error code 45 when processing large items.',
+            status: 'rejected',
+            date: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
+            attachments: 0
+          }
+        ];
+        localStorage.setItem('reports', JSON.stringify(reports));
+      }
+      
+      if (reports.length === 0) {
+        reportsList.innerHTML = '<div class="no-reports">No reports submitted yet</div>';
+        return;
+      }
+      
+      // Sort reports by date (newest first)
+      reports.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      reportsList.innerHTML = reports.map(report => `
+        <div class="report-item">
+          <h3 class="report-title">${report.title}</h3>
+          <div class="report-meta">
+            <span>#${report.id}</span>
+            <span>Submitted: ${formatDate(report.date)}</span>
+            ${report.attachments > 0 ? `<span>Attachments: ${report.attachments}</span>` : ''}
+          </div>
+          <div class="status-badge ${getStatusClass(report.status)}">${getStatusText(report.status)}</div>
+        </div>
+      `).join('');
+    }
+    
+    function getStatusClass(status) {
+      switch(status.toLowerCase()) {
+        case 'pending':
+        case 'in review':
+          return 'status-pending';
+        case 'resolved':
+        case 'completed':
+          return 'status-resolved';
+        case 'rejected':
+        case 'closed':
+          return 'status-rejected';
+        default:
+          return 'status-pending';
+      }
+    }
+    
+    function getStatusText(status) {
+      switch(status.toLowerCase()) {
+        case 'pending':
+          return 'In Review';
+        case 'resolved':
+          return 'Resolved';
+        case 'rejected':
+          return 'Rejected';
+        default:
+          return status;
+      }
+    }
+    
     // Form submission
     document.getElementById('reportForm').addEventListener('submit', function(e) {
       e.preventDefault();
@@ -371,7 +465,7 @@
         return;
       }
       
-      // Create report object (in a real app, this would go to your backend)
+      // Create report object
       const report = {
         id: `REP-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
         title,
@@ -383,7 +477,7 @@
         attachments: document.getElementById('attachments').files.length
       };
       
-      // Store in localStorage for demo purposes
+      // Store in localStorage
       let reports = JSON.parse(localStorage.getItem('reports')) || [];
       reports.unshift(report); // Add new report at beginning
       localStorage.setItem('reports', JSON.stringify(reports));
@@ -395,15 +489,12 @@
       this.reset();
       document.getElementById('fileNames').textContent = 'No files selected';
       
-      // In a real app, you would redirect or refresh the recent reports list
-      window.location.reload();
+      // Refresh the reports list
+      renderReports();
     });
     
-    // Load recent reports from localStorage
-    document.addEventListener('DOMContentLoaded', function() {
-      const reports = JSON.parse(localStorage.getItem('reports')) || [];
-      // You would populate the recent reports list with this data
-    });
+    // Load reports when page loads
+    document.addEventListener('DOMContentLoaded', renderReports);
   </script>
 </body>
 </html>
