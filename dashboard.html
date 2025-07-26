@@ -3,107 +3,639 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Dashboard & History</title>
+  <title>In Progress</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: url('https://images.unsplash.com/photo-1607082350928-13b1ad52816d') no-repeat center center/cover;
+      background: #0e0e0e;
+      color: white;
       margin: 0;
       padding: 0;
-      color: #333;
+    }
+
+    .header {
+      background: #000;
+      padding: 1rem;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      height: 100vh;
+      box-shadow: 0 4px 15px rgba(255, 140, 66, 0.2);
+    }
+
+    .back-btn {
+      background: #FF8C42;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .back-btn:hover {
+      background: #e67a35;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 140, 66, 0.3);
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      padding: 2rem;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 2rem;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 600px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+      background: #000;
+      padding: 1.5rem;
+      border-radius: 15px;
+      width: 300px;
+      box-shadow: 0 0 20px rgba(255, 140, 66, 0.3);
+      transition: all 0.3s ease;
+      border: 1px solid #333;
     }
 
-    h2 {
-      color: #d35400;
-      margin-bottom: 1rem;
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(255, 140, 66, 0.4);
+      border-color: #FF8C42;
     }
 
-    .section {
-      margin-bottom: 1.5rem;
+    .profile {
+      background: linear-gradient(135deg, #FF8C42, #FFB347);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: bold;
+      font-size: 24px;
+      transition: all 0.3s ease;
     }
 
-    .section-title {
+    .card:hover .profile {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.5);
+    }
+
+    .username {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover .username {
+      color: #FF8C42;
+    }
+
+    .status-section {
+      margin-top: 1.5rem;
+    }
+
+    .status-title {
       font-weight: 600;
       margin-bottom: 0.5rem;
+      color: #FF8C42;
+      transition: all 0.3s ease;
     }
 
-    .row {
+    .card:hover .status-title {
+      letter-spacing: 1px;
+    }
+
+    .status-item {
+      background: #1e1e1e;
+      padding: 0.8rem;
+      border-radius: 8px;
+      margin-bottom: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .status-item:hover {
+      background: #2e2e2e;
+      border-left: 3px solid #FF8C42;
+      transform: translateX(5px);
+    }
+
+    .status-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 0.4rem;
+      margin-top: 0.5rem;
+      align-items: center;
     }
 
-    .field {
-      font-weight: 400;
-      font-size: 14px;
-    }
-
-    .note {
+    .status-badge {
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
       font-size: 12px;
-      color: #666;
-      margin-top: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .status-item:hover .status-badge {
+      transform: scale(1.05);
+    }
+
+    .notified { background: #ff3333; }
+    .working { background: #FF8C42; }
+    .completed { background: #4CAF50; }
+    .reported { background: #9C27B0; }
+
+    .task-title {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      transition: all 0.3s ease;
+    }
+
+    .status-item:hover .task-title {
+      color: #FF8C42;
+    }
+
+    .task-desc {
+      font-size: 14px;
+      color: #bbb;
+      transition: all 0.3s ease;
+    }
+
+    .status-item:hover .task-desc {
+      color: #ddd;
+    }
+
+    .click-hint {
+      font-size: 12px;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+
+    .status-item:hover .click-hint {
+      opacity: 1;
+      transform: translateX(3px);
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 5px;
+      background: #333;
+      border-radius: 3px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #FF8C42;
+      width: 0;
+      transition: width 1s ease;
+    }
+
+    .card:hover .progress-bar {
+      width: 70%;
+    }
+
+    .tab-container {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .tab {
+      padding: 0.5rem 1.5rem;
+      background: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .tab:first-child {
+      border-radius: 8px 0 0 8px;
+    }
+
+    .tab:last-child {
+      border-radius: 0 8px 8px 0;
+    }
+
+    .tab.active {
+      background: #FF8C42;
+    }
+
+    .tab:hover {
+      background: #555;
+    }
+
+    .tab.active:hover {
+      background: #e67a35;
+    }
+    
+    /* Search Bar Container */
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin: 1.5rem 0;
+      padding: 0 2rem;
+    }
+
+    /* Search Bar Styling */
+    .search-bar {
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.8rem 1.5rem;
+      padding-right: 3rem;
+      border: 2px solid #333;
+      border-radius: 30px;
+      background-color: #1e1e1e;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-input:hover {
+      border-color: #555;
+      box-shadow: 0 4px 15px rgba(255, 140, 66, 0.1);
+    }
+
+    .search-input:focus {
+      border-color: #FF8C42;
+      box-shadow: 0 4px 20px rgba(255, 140, 66, 0.3);
+    }
+
+    /* Search Icon */
+    .search-icon {
+      position: absolute;
+      right: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:hover + .search-icon {
+      color: #aaa;
+    }
+
+    .search-input:focus + .search-icon {
+      color: #FF8C42;
+    }
+
+    /* Search Button */
+    .search-button {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-button:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    /* Clear Button */
+    .clear-button {
+      position: absolute;
+      right: 3.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #777;
+      cursor: pointer;
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:not(:placeholder-shown) + .clear-button {
+      opacity: 1;
+    }
+
+    .clear-button:hover {
+      color: #FF8C42;
+      transform: translateY(-50%) scale(1.1);
     }
   </style>
 </head>
 <body>
-
-  <div class="card">
-    <h2>USER, Dashboard and History</h2>
-
-    <div class="section">
-      <div class="section-title">Employee Info</div>
-      <div class="row">
-        <span class="field">Employee-ID:</span>
-        <span class="field">EMP12345</span>
-      </div>
-      <div class="row">
-        <span class="field">Name:</span>
-        <span class="field">John Doe</span>
-      </div>
-      <div class="row">
-        <span class="field">Experience:</span>
-        <span class="field">3 Years</span>
-      </div>
-      <div class="row">
-        <span class="field">YOE:</span>
-        <span class="field">2021</span>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">History</div>
-      <div class="row">
-        <span class="field">Problem-ID:</span>
-        <span class="field">PB103</span>
-      </div>
-      <div class="row">
-        <span class="field">Title:</span>
-        <span class="field">Motor Overheat</span>
-      </div>
-      <div class="row">
-        <span class="field">Status:</span>
-        <span class="field">In Progress</span>
-      </div>
-    </div>
-
-    <div class="note">
-      This page layout is reused for technician's dashboard and history too.
+  <div class="header">
+    <button class="back-btn" onclick="window.location.href='home.html'">Back to Home</button>
+    <div id="roleDisplay"></div>
+  </div>
+  
+  <div class="search-container">
+    <div class="search-bar">
+      <input type="text" class="search-input" id="searchInput" placeholder="Search tasks by ID, title or status...">
+      <button class="clear-button" id="clearButton"></button>
+      <button class="search-button" id="searchButton">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
     </div>
   </div>
 
+  <div class="tab-container">
+    <button class="tab active" onclick="filterTasks('all')">All Tasks</button>
+    <button class="tab" onclick="filterTasks('working')">In Progress</button>
+    <button class="tab" onclick="filterTasks('reported')">Reported</button>
+  </div>
+
+  <div class="container" id="tasksContainer">
+    <!-- Tasks will be loaded here based on user role -->
+  </div>
+
+  <script>
+    // Check authentication and load appropriate tasks
+    const role = localStorage.getItem('role') || 'technician';
+    if (!role) window.location.href = 'admin-login.html';
+
+    document.getElementById('roleDisplay').textContent = 
+      role.charAt(0).toUpperCase() + role.slice(1) + ' Dashboard';
+
+    // Enhanced tasks data with reported issues
+    const tasks = {
+      admin: [
+        {
+          id: 'ADM-001',
+          title: 'System Maintenance',
+          description: 'Monthly server maintenance check',
+          status: 'working',
+          progress: 45
+        },
+        {
+          id: 'ADM-002',
+          title: 'User Management',
+          description: 'Review new technician applications',
+          status: 'notified',
+          progress: 10
+        },
+        {
+          id: 'ADM-003',
+          title: 'Database Optimization',
+          description: 'Optimize production database queries',
+          status: 'working',
+          progress: 30
+        },
+        {
+          id: 'ADM-004',
+          title: 'Security Audit',
+          description: 'Conduct quarterly security audit',
+          status: 'notified',
+          progress: 5
+        },
+        {
+          id: 'ADM-005',
+          title: 'Server Downtime',
+          description: 'Unexpected server crash reported',
+          status: 'reported',
+          progress: 0
+        },
+        {
+          id: 'ADM-006',
+          title: 'Data Breach',
+          description: 'Potential security breach detected',
+          status: 'reported',
+          progress: 0
+        }
+      ],
+      technician: [
+        {
+          id: 'TECH-101',
+          title: 'Motor Repair',
+          description: 'Conveyor belt motor overheating',
+          status: 'working',
+          progress: 65
+        },
+        {
+          id: 'TECH-102',
+          title: 'Sensor Calibration',
+          description: 'Calibrate temperature sensors in Zone 4',
+          status: 'working',
+          progress: 80
+        },
+        {
+          id: 'TECH-103',
+          title: 'Equipment Installation',
+          description: 'Install new packaging machine',
+          status: 'working',
+          progress: 25
+        },
+        {
+          id: 'TECH-104',
+          title: 'Preventive Maintenance',
+          description: 'Quarterly maintenance of all machines',
+          status: 'working',
+          progress: 40
+        },
+        {
+          id: 'TECH-105',
+          title: 'Fault Diagnosis',
+          description: 'Diagnose intermittent power failures',
+          status: 'notified',
+          progress: 15
+        },
+        {
+          id: 'TECH-106',
+          title: 'Critical Machine Failure',
+          description: 'Main production line machine stopped working',
+          status: 'reported',
+          progress: 0
+        },
+        {
+          id: 'TECH-107',
+          title: 'Safety Hazard',
+          description: 'Exposed wiring in workstation 3',
+          status: 'reported',
+          progress: 0
+        }
+      ],
+      worker: [
+        {
+          id: 'WRK-201',
+          title: 'Assembly Line Check',
+          description: 'Daily inspection of assembly line',
+          status: 'working',
+          progress: 90
+        },
+        {
+          id: 'WRK-202',
+          title: 'Quality Control',
+          description: 'Final product quality check',
+          status: 'notified',
+          progress: 20
+        },
+        {
+          id: 'WRK-203',
+          title: 'Inventory Count',
+          description: 'Weekly raw material inventory',
+          status: 'working',
+          progress: 75
+        },
+        {
+          id: 'WRK-204',
+          title: 'Packaging',
+          description: 'Batch packaging of finished goods',
+          status: 'working',
+          progress: 60
+        },
+        {
+          id: 'WRK-205',
+          title: 'Material Shortage',
+          description: 'Insufficient raw materials for production',
+          status: 'reported',
+          progress: 0
+        },
+        {
+          id: 'WRK-206',
+          title: 'Defective Products',
+          description: 'Batch of defective products detected',
+          status: 'reported',
+          progress: 0
+        }
+      ]
+    };
+
+    // Current filter state
+    let currentFilter = 'all';
+    let currentSearchQuery = '';
+
+    // DOM elements
+    const searchInput = document.getElementById('searchInput');
+    const clearButton = document.getElementById('clearButton');
+    const searchButton = document.getElementById('searchButton');
+    const tasksContainer = document.getElementById('tasksContainer');
+
+    // Load tasks for current role with optional filter and search
+    function loadTasks(filter = 'all', searchQuery = '') {
+      tasksContainer.innerHTML = '';
+      
+      const filteredTasks = tasks[role].filter(task => {
+        // Apply status filter
+        const statusMatch = filter === 'all' || task.status === filter;
+        
+        // Apply search query if exists
+        const searchMatch = !searchQuery || 
+          task.id.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          task.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          task.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          task.status.toLowerCase().includes(searchQuery.toLowerCase());
+        
+        return statusMatch && searchMatch;
+      });
+
+      if (filteredTasks.length === 0) {
+        tasksContainer.innerHTML = `
+          <div style="width: 100%; text-align: center; color: #777; margin-top: 2rem;">
+            No tasks found matching your criteria
+          </div>
+        `;
+        return;
+      }
+
+      filteredTasks.forEach(task => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="profile">${role.charAt(0).toUpperCase()}</div>
+          <div class="username">${role.toUpperCase()}</div>
+          
+          <div class="status-section">
+            <div class="status-title">Task ID: ${task.id}</div>
+            <div class="status-item" onclick="viewTaskDetail('${task.id}')">
+              <div class="task-title">${task.title}</div>
+              <div class="task-desc">${task.description}</div>
+              <div class="progress-container">
+                <div class="progress-bar" style="width: ${task.progress}%"></div>
+              </div>
+              <div class="status-row">
+                <span class="status-badge ${task.status}">
+                  ${task.status}
+                </span>
+                <span class="click-hint">Click for details</span>
+              </div>
+            </div>
+          </div>
+        `;
+        tasksContainer.appendChild(card);
+      });
+    }
+
+    function filterTasks(status) {
+      currentFilter = status;
+      
+      // Update active tab
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Load filtered and searched tasks
+      loadTasks(currentFilter, currentSearchQuery);
+    }
+
+    function viewTaskDetail(taskId) {
+      alert(`Viewing details for task: ${taskId}\n(Would redirect to detailed view in production)`);
+    }
+
+    // Search functionality
+    clearButton.addEventListener('click', () => {
+      searchInput.value = '';
+      searchInput.focus();
+      currentSearchQuery = '';
+      loadTasks(currentFilter, '');
+    });
+
+    searchInput.addEventListener('input', () => {
+      clearButton.style.opacity = searchInput.value ? '1' : '0';
+    });
+
+    function performSearch() {
+      currentSearchQuery = searchInput.value.trim();
+      loadTasks(currentFilter, currentSearchQuery);
+    }
+
+    searchButton.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
+
+    // Animation on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTasks();
+      
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, index * 100);
+      });
+    });
+  </script>
 </body>
 </html>

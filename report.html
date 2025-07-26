@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Issues</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #FF8C42;
+      --secondary: #2e2e2e;
+      --danger: #ff3333;
+      --success: #4CAF50;
+      --text: #fff;
+      --bg: #0e0e0e;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    
+    .header {
+      background: #000;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(255, 140, 66, 0.2);
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    
+    .nav-link {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+    
+    .main-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+    
+    .card {
+      background: var(--secondary);
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+    
+    .card-header {
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: #3e3e3e;
+      border: 1px solid #444;
+      border-radius: 5px;
+      color: var(--text);
+      font-size: 1rem;
+    }
+    
+    textarea.form-control {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: #000;
+    }
+    
+    .btn-secondary {
+      background: #444;
+      color: var(--text);
+    }
+    
+    .file-upload {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .file-upload-label {
+      padding: 0.8rem 1.5rem;
+      background: #444;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    /* Hover Effects */
+    .nav-link:hover {
+      background: rgba(255, 140, 66, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .nav-link.active {
+      background: var(--primary);
+      color: #000;
+    }
+    
+    .nav-link.active:hover {
+      background: #e67a35;
+    }
+    
+    .btn-primary:hover {
+      background: #e67a35;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 140, 66, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      background: #555;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .file-upload-label:hover {
+      background: #555;
+      transform: translateY(-2px);
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.3);
+    }
+    
+    select.form-control:hover {
+      cursor: pointer;
+    }
+    
+    /* Recent Reports Section */
+    .reports-list {
+      margin-top: 2rem;
+    }
+    
+    .report-item {
+      background: #3e3e3e;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .report-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      border-left: 3px solid var(--primary);
+    }
+    
+    .report-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+    
+    .report-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+      color: #bbb;
+      margin-bottom: 0.5rem;
+    }
+    
+    .status-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .status-pending {
+      background: #FF8C42;
+      color: #000;
+    }
+    
+    .status-resolved {
+      background: #4CAF50;
+      color: #000;
+    }
+    
+    .status-rejected {
+      background: #ff3333;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">TaskFlow</div>
+    <div class="nav-links">
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="in-progress.html" class="nav-link">In Progress</a>
+      <a href="report.html" class="nav-link active">Report</a>
+      <a href="profile.html" class="nav-link">Profile</a>
+    </div>
+  </div>
+  
+  <div class="main-container">
+    <div class="card">
+      <div class="card-header">
+        <h1 class="card-title">Report New Issue</h1>
+      </div>
+      
+      <form id="reportForm">
+        <div class="form-group">
+          <label for="issueTitle">Issue Title</label>
+          <input type="text" id="issueTitle" class="form-control" placeholder="Briefly describe the issue" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="issueType">Issue Type</label>
+          <select id="issueType" class="form-control" required>
+            <option value="">Select issue type</option>
+            <option value="bug">Bug/Error</option>
+            <option value="feature">Feature Request</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="safety">Safety Concern</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="priority">Priority</label>
+          <select id="priority" class="form-control" required>
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Detailed Description</label>
+          <textarea id="description" class="form-control" placeholder="Please provide as much detail as possible..." required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>Attachments (Optional)</label>
+          <div class="file-upload">
+            <label for="attachments" class="file-upload-label">Choose Files</label>
+            <input type="file" id="attachments" style="display: none;" multiple>
+            <span id="fileNames">No files selected</span>
+          </div>
+          <small style="color: #bbb;">Max file size: 5MB each (images, logs, documents)</small>
+        </div>
+        
+        <div style="display: flex; gap: 1rem;">
+          <button type="submit" class="btn btn-primary">Submit Report</button>
+          <button type="reset" class="btn btn-secondary">Clear Form</button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Your Recent Reports</h2>
+      </div>
+      
+      <div class="reports-list">
+        <div class="report-item">
+          <h3 class="report-title">Conveyor Belt Motor Overheating</h3>
+          <div class="report-meta">
+            <span>#REP-2023-156</span>
+            <span>Submitted: 2 hours ago</span>
+          </div>
+          <div class="status-badge status-pending">In Review</div>
+        </div>
+        
+        <div class="report-item">
+          <h3 class="report-title">Safety Hazard in Workstation 3</h3>
+          <div class="report-meta">
+            <span>#REP-2023-155</span>
+            <span>Submitted: 1 day ago</span>
+          </div>
+          <div class="status-badge status-resolved">Resolved</div>
+        </div>
+        
+        <div class="report-item">
+          <h3 class="report-title">Packaging Machine Error Code 45</h3>
+          <div class="report-meta">
+            <span>#REP-2023-153</span>
+            <span>Submitted: 3 days ago</span>
+          </div>
+          <div class="status-badge status-rejected">Rejected</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Handle file selection display
+    document.getElementById('attachments').addEventListener('change', function(e) {
+      const files = e.target.files;
+      const fileNames = document.getElementById('fileNames');
+      
+      if (files.length === 0) {
+        fileNames.textContent = 'No files selected';
+      } else if (files.length === 1) {
+        fileNames.textContent = files[0].name;
+      } else {
+        fileNames.textContent = `${files.length} files selected`;
+      }
+    });
+    
+    // Form submission
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get form values
+      const title = document.getElementById('issueTitle').value;
+      const type = document.getElementById('issueType').value;
+      const priority = document.getElementById('priority').value;
+      const description = document.getElementById('description').value;
+      
+      // Simple validation
+      if (!title || !type || !description) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      // Create report object (in a real app, this would go to your backend)
+      const report = {
+        id: `REP-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
+        title,
+        type,
+        priority,
+        description,
+        status: 'pending',
+        date: new Date().toISOString(),
+        attachments: document.getElementById('attachments').files.length
+      };
+      
+      // Store in localStorage for demo purposes
+      let reports = JSON.parse(localStorage.getItem('reports')) || [];
+      reports.unshift(report); // Add new report at beginning
+      localStorage.setItem('reports', JSON.stringify(reports));
+      
+      // Show success message
+      alert(`Report #${report.id} submitted successfully!`);
+      
+      // Reset form
+      this.reset();
+      document.getElementById('fileNames').textContent = 'No files selected';
+      
+      // In a real app, you would redirect or refresh the recent reports list
+      window.location.reload();
+    });
+    
+    // Load recent reports from localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+      const reports = JSON.parse(localStorage.getItem('reports')) || [];
+      // You would populate the recent reports list with this data
+    });
+  </script>
+</body>
+</html>
